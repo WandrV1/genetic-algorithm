@@ -1,9 +1,15 @@
 # TODO список точек должен задаваться при взаимодействии пользователя с UI
 # TODO добавить функционал сохранения и загрузки списка точек и параметров модели
-
+# import random
+# import copy
+# import math
+# import numpy as np
+# import matplotlib.pyplot as plt
+#
 from point import Point
+# from individual import Individual
 from genetic_master import GeneticMaster
-
+#
 # def individual_creator(points: list) -> Individual:
 #     """
 #     Создание индивида. Геном формируется случайным образом из списка переданных точек
@@ -189,13 +195,13 @@ from genetic_master import GeneticMaster
 # Параметры ГА
 # TODO параметры должны передаваться из UI
 # Размер популяции
-POPULATION_SIZE = 100
+POPULATION_SIZE = 200
 # Метод выбора кандидатов для скрещивания (roulette или tour)
 SELECTION_METHOD = "tour"
 # Кол-во пар участвующих в скрещивании
 CROSSOVER_COUNT = 10
 # Кол-во поколений
-GENERATIONS_COUNT = 2000
+GENERATIONS_COUNT = 1000
 # Тип мутации
 MUTATION_TYPE = "med"
 # Размер тура (если метод выбора кандидатов tour)
@@ -207,14 +213,18 @@ def main():
     points_list = [Point(81, 14), Point(3, 94), Point(35, 31), Point(28, 17), Point(94, 13), Point(86, 94),
                    Point(69, 11), Point(75, 54), Point(4, 3), Point(11, 27)]
 
+    # metrics = {"max": [], "min": [], "avg": []}
     # my_population = population_creator(points_list, POPULATION_SIZE)
-    # super_best = -1
+    # super_best = math.inf
     # super_ind = None
     # for _ in range(GENERATIONS_COUNT):
     #     best, worst, average, ind = evaluate_population(my_population)
     #     print(average)
     #     print(f"best: {best}")
-    #     if best > super_best:
+    #     metrics["max"].append(best)
+    #     metrics["avg"].append(average)
+    #     metrics["min"].append(worst)
+    #     if best < super_best:
     #         super_best = best
     #         super_ind = ind
     #     candidates = candidate_selection(my_population, CROSSOVER_COUNT, SELECTION_METHOD)
@@ -223,6 +233,15 @@ def main():
     #     my_population = my_population[:-CROSSOVER_COUNT*2]
     #     my_population += new_candidates
     #     mutation(my_population, MUTATION_TYPE)
+    # generations = list(range(1, GENERATIONS_COUNT + 1))
+    # plt.plot(generations, metrics["avg"], label="avg")
+    # plt.plot(generations, metrics["min"], label="min")
+    # plt.plot(generations, metrics["max"], label="max")
+    # plt.xlabel("Поколение")
+    # plt.ylabel("Пригодность (меньше - лучше)")
+    # plt.title("Обучение генетического алгоритма")
+    # plt.legend(loc=2)
+    # plt.show()
     # print(super_best)
 
     test_master = GeneticMaster(points_list, POPULATION_SIZE, CROSSOVER_COUNT,
