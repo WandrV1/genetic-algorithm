@@ -13,6 +13,7 @@ class GeneticMaster:
         # Параметр - размер популяции
         self.population_size = population_size
         # Параметр - кол-во пар участвующих в скрещивании
+        # ! Кол-во пар должно быть не больше половины размера популяции
         self.crossover_count = crossover_count
         # Параметр - метод селекции ("tour" или "roulette")
         self.selection_method = selection_method
