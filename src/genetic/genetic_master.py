@@ -4,11 +4,11 @@ import copy
 import numpy as np
 import matplotlib.pyplot as plt
 
-from individual import Individual
+from genetic.individual import Individual
 
 
 class GeneticMaster:
-    def __init__(self, points: list, population_size: int, crossover_count: int, selection_method: str,
+    def __init__(self, population_size: int, crossover_count: int, selection_method: str,
                  mutation_type: str, generations_count: int, tour_size):
         # Параметр - размер популяции
         self.population_size = population_size
@@ -23,9 +23,9 @@ class GeneticMaster:
         self.generations_count = generations_count
         # Параметр - размер тура (имеет смысл только тогда когда selection_method == "tour")
         self.tour_size = tour_size
-        # Популяция
-        self.population = self.population_creator(points)
-        # Метрика для построения графика обучения
+        
+        self.points = []
+        self.super_genome = []
         self.metrics = {"max": [], "min": [], "avg": []}
 
     def __individual_creator(self, points: list) -> Individual:
@@ -45,7 +45,7 @@ class GeneticMaster:
         :param population_size: Размер популяции
         :return: Список экземпляров класса Individual
         """
-        return [self.__individual_creator(points) for i in range(self.population_size)]
+        return [self.__individual_creator(points) for __ in range(self.population_size)]
 
     def evaluate_population(self):
         """
@@ -216,11 +216,17 @@ class GeneticMaster:
                     individual.genome[i], individual.genome[j] = individual.genome[j], individual.genome[i]
                     # print("Got mutation")
 
-    def run(self):
+    def run(self, figure=None):
         """
         Запуск генетического алгоритма
+        :param canvas: FigureCanvasQTAgg для отображения графика
         :return:
         """
+        self.population = self.population_creator(self.points)
+        self.super_genome.clear()
+        for value in self.metrics.values():
+            value.clear()
+
         super_best = math.inf
         super_individual = None
         for _ in range(self.generations_count):
@@ -239,15 +245,23 @@ class GeneticMaster:
             self.population = self.population[:-self.crossover_count*2]
             self.population += legacy
             self.mutation()
-        # print(super_best)
-        generations = list(range(1, self.generations_count+1))
-        plt.plot(generations, self.metrics["avg"], label="avg")
-        plt.plot(generations, self.metrics["min"], label="min")
-        plt.plot(generations, self.metrics["max"], label="max")
-        plt.xlabel("Поколение")
-        plt.ylabel("Пригодность (меньше - лучше)")
-        plt.title("Обучение генетического алгоритма")
-        plt.legend(loc=2)
-        plt.show()
-        print(super_best)
+        
+        # Построение графика
+        if (figure):
+            ax = figure.add_subplot()
+            generations = list(range(1, self.generations_count+1))
+            ax.plot(generations, self.metrics["avg"], label="avg")
+            ax.plot(generations, self.metrics["min"], label="min")
+            ax.plot(generations, self.metrics["max"], label="max")
+            ax.set_xlabel("Поколение")
+            ax.set_ylabel("Пригодность (меньше - лучше)")
+            ax.set_title("Обучение генетического алгоритма")
+            ax.legend(loc=2)
+        
+        self.super_genome = super_individual.genome
+
         return super_best, super_individual
+
+    def clear(self):
+        self.points.clear()
+        self.super_genome.clear()
