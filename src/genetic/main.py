@@ -7,7 +7,7 @@
 # import matplotlib.pyplot as plt
 #
 from point import Point
-# from individual import Individual
+from individual import Individual
 from genetic_master import GeneticMaster
 #
 # def individual_creator(points: list) -> Individual:
@@ -248,7 +248,8 @@ def main():
     test_master = GeneticMaster(points_list, POPULATION_SIZE, CROSSOVER_COUNT,
                                 SELECTION_METHOD, MUTATION_TYPE, GENERATIONS_COUNT, TOUR_SIZE)
     # Просто принимаю возвращаемые значения для проверки их корректности
-    super_score, super_ind = test_master.run()
+    super_score, super_genome = test_master.run()
+    super_ind = Individual(super_genome)
     print(super_ind.fitness)
 
 

@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from individual import Individual
+from point import Point
 
 
 class GeneticMaster:
@@ -239,7 +240,8 @@ class GeneticMaster:
         :return:
         """
         super_best = math.inf
-        super_individual = None
+        # super_individual = None
+        super_genome = []
         for _ in range(self.generations_count):
             best, worst, average, ind = self.evaluate_population()
             # print(average)
@@ -249,7 +251,9 @@ class GeneticMaster:
             self.metrics["min"].append(worst)
             if best < super_best:
                 super_best = best
-                super_individual = ind
+                # super_individual = ind
+                super_genome_local = ind.genome
+                super_genome = [Point(point.x, point.y) for point in super_genome_local]
             candidates = self.candidate_selection()
             legacy = self.crossover_candidates(candidates)
             self.population.sort(key=lambda x: x.fitness)
@@ -267,4 +271,5 @@ class GeneticMaster:
         plt.legend(loc=2)
         plt.show()
         print(super_best)
-        return super_best, super_individual
+        # return super_best, super_individual
+        return super_best, super_genome
