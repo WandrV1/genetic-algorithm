@@ -17,6 +17,16 @@ class Individual:
                 curr_fitness += self.genome[i].distance(self.genome[i + 1])
         return curr_fitness
 
+    def update_fitness(self):
+        # print("Update fitness")
+        curr_fitness = 0
+        for i in range(len(self.genome)):
+            if i == len(self.genome) - 1:
+                curr_fitness += self.genome[i].distance(self.genome[0])
+            else:
+                curr_fitness += self.genome[i].distance(self.genome[i + 1])
+        self.fitness = curr_fitness
+
     def set_normalized_fitness(self, min_fitness: float):
         """
         Нормализовать значения функции пригодности

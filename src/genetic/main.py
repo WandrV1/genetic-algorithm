@@ -247,7 +247,9 @@ def main():
 
     test_master = GeneticMaster(points_list, POPULATION_SIZE, CROSSOVER_COUNT,
                                 SELECTION_METHOD, MUTATION_TYPE, GENERATIONS_COUNT, TOUR_SIZE)
-    test_master.run()
+    # Просто принимаю возвращаемые значения для проверки их корректности
+    super_score, super_ind = test_master.run()
+    print(super_ind.fitness)
 
 
 if __name__ == "__main__":

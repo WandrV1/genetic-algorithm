@@ -102,12 +102,27 @@ class GeneticMaster:
             """
             # Важно чтобы tour_size был меньше размера population
             tour_members = []
-            for _ in range(selecting_tour_size):
-                potential_member = random.choice(selecting_population)
-                while potential_member in tour_members:
-                    potential_member = random.choice(selecting_population)
-                tour_members.append(potential_member)
+            tour_indexes = random.sample(range(0, len(selecting_population) - 1), selecting_tour_size)
+            # print(tour_indexes)
+            for index in tour_indexes:
+                tour_members.append(selecting_population[index])
+            # for _ in range(selecting_tour_size):
+            #     potential_index = np.random.randint(0, len(selecting_population) - 1)
+            #     while potential_index in tour_indexes:
+            #         print(len(selecting_population))
+            #         print(potential_index)
+            #         potential_index = np.random.randint(0, len(selecting_population) - 1)
+            #
+            #     # potential_member = random.choice(selecting_population)
+            #     # while potential_member in tour_members:
+            #     #     potential_member = random.choice(selecting_population)
+            #     # tour_members.append(potential_member)
+            #     tour_indexes.append(potential_index)
+            #     tour_members.append(selecting_population[potential_index])
             tour_members.sort(key=lambda x: x.normalized_fitness, reverse=True)
+            # if tour_members[-1].fitness == tour_members[0].fitness:
+            #     return tour_members[0], False
+            # return tour_members[0], True
             return tour_members[0]
 
         population = self.population
@@ -119,18 +134,20 @@ class GeneticMaster:
             for _ in range(crossover_count):
                 individual1 = roulette(population, max_fitness)
                 individual2 = roulette(population, max_fitness)
-                while individual1 == individual2:
-                    individual2 = roulette(population, max_fitness)
+                # while individual1 == individual2:
+                #     individual2 = roulette(population, max_fitness)
                 # print(individual1.fitness, individual1.normalized_fitness)
                 # print(individual2.fitness, individual2.normalized_fitness)
                 selected_candidates.append([individual1, individual2])
         elif method == "tour":
             tour_size = self.tour_size
             for _ in range(crossover_count):
+                # individual1, other = tour(population, tour_size)
+                # individual2, other = tour(population, tour_size)
+                # while other:
+                #     individual2, other = tour(population, tour_size)
                 individual1 = tour(population, tour_size)
                 individual2 = tour(population, tour_size)
-                while individual1 == individual2:
-                    individual2 = tour(population, tour_size)
                 selected_candidates.append([individual1, individual2])
         else:
             raise Exception("Некорректный способ проведения селекции")
@@ -214,7 +231,7 @@ class GeneticMaster:
                     while i == j:
                         j = random.randint(0, len(individual.genome) - 1)
                     individual.genome[i], individual.genome[j] = individual.genome[j], individual.genome[i]
-                    # print("Got mutation")
+                    individual.update_fitness()
 
     def run(self):
         """
