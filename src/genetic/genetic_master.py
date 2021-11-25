@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from genetic.individual import Individual
+from genetic.point import Point
 
 
 class GeneticMaster:
@@ -102,11 +103,14 @@ class GeneticMaster:
             """
             # Важно чтобы tour_size был меньше размера population
             tour_members = []
-            for _ in range(selecting_tour_size):
-                potential_member = random.choice(selecting_population)
-                while potential_member in tour_members:
-                    potential_member = random.choice(selecting_population)
-                tour_members.append(potential_member)
+            # for _ in range(selecting_tour_size):
+            #     potential_member = random.choice(selecting_population)
+            #     while potential_member in tour_members:
+            #         potential_member = random.choice(selecting_population)
+            #     tour_members.append(potential_member)
+            tour_indexes = random.sample(range(0, len(selecting_population) - 1), selecting_tour_size)
+            for index in tour_indexes:
+                tour_members.append(selecting_population[index])
             tour_members.sort(key=lambda x: x.normalized_fitness, reverse=True)
             return tour_members[0]
 
@@ -119,8 +123,8 @@ class GeneticMaster:
             for _ in range(crossover_count):
                 individual1 = roulette(population, max_fitness)
                 individual2 = roulette(population, max_fitness)
-                while individual1 == individual2:
-                    individual2 = roulette(population, max_fitness)
+                # while individual1 == individual2:
+                #     individual2 = roulette(population, max_fitness)
                 # print(individual1.fitness, individual1.normalized_fitness)
                 # print(individual2.fitness, individual2.normalized_fitness)
                 selected_candidates.append([individual1, individual2])
@@ -129,8 +133,8 @@ class GeneticMaster:
             for _ in range(crossover_count):
                 individual1 = tour(population, tour_size)
                 individual2 = tour(population, tour_size)
-                while individual1 == individual2:
-                    individual2 = tour(population, tour_size)
+                # while individual1 == individual2:
+                #     individual2 = tour(population, tour_size)
                 selected_candidates.append([individual1, individual2])
         else:
             raise Exception("Некорректный способ проведения селекции")
@@ -214,6 +218,7 @@ class GeneticMaster:
                     while i == j:
                         j = random.randint(0, len(individual.genome) - 1)
                     individual.genome[i], individual.genome[j] = individual.genome[j], individual.genome[i]
+                    individual.update_fitness()
                     # print("Got mutation")
 
     def run(self, figure=None):
@@ -228,7 +233,8 @@ class GeneticMaster:
             value.clear()
 
         super_best = math.inf
-        super_individual = None
+        # super_individual = None
+        super_genome = []
         for _ in range(self.generations_count):
             best, worst, average, ind = self.evaluate_population()
             # print(average)
@@ -238,7 +244,8 @@ class GeneticMaster:
             self.metrics["min"].append(worst)
             if best < super_best:
                 super_best = best
-                super_individual = ind
+                # super_individual = ind
+                super_genome = [Point(point.x, point.y) for point in ind.genome]
             candidates = self.candidate_selection()
             legacy = self.crossover_candidates(candidates)
             self.population.sort(key=lambda x: x.fitness)
@@ -258,9 +265,10 @@ class GeneticMaster:
             ax.set_title("Обучение генетического алгоритма")
             ax.legend(loc=2)
         
-        self.super_genome = super_individual.genome
+        # self.super_genome = super_individual.genome
+        self.super_genome = super_genome
 
-        return super_best, super_individual
+        return super_best, Individual(super_genome)
 
     def clear(self):
         self.points.clear()
