@@ -79,8 +79,8 @@ class GraphWidget(QtWidgets.QLabel):
                 radius*2
             )
         
-        for i in range(len(self.genetic_master.super_genome) - 1):
-            point_a, point_b = self.genetic_master.super_genome[i:i + 2]
+        for i, point_a in enumerate(self.genetic_master.super_genome):
+            point_b = self.genetic_master.super_genome[(i + 1) % len(self.genetic_master.super_genome)]
             qp.drawLine(point_a.x * w, point_a.y * h, point_b.x * w, point_b.y * h)
 
         qp.restore()

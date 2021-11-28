@@ -93,6 +93,7 @@ class MainWindow(QMainWindow, main_window.Ui_MainWindow):
 
     def setup_canvas(self):
         self.figure = Figure()
+        self.ax = self.figure.add_subplot()
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.plotGroup.layout().addWidget(self.canvas)
 
@@ -127,12 +128,14 @@ class MainWindow(QMainWindow, main_window.Ui_MainWindow):
         self.genetic_master.mutation_type = value
 
     def run_algorithm(self):
+        self.ax.clear()
+
         MIN_POINTS = 3
         if len(self.genetic_master.points) < MIN_POINTS:
             self.message("Требуется задать более двухточек!", True)
             return
 
-        super_best, super_individual = self.genetic_master.run(self.figure)
+        super_best = self.genetic_master.run(self.ax)
         self.canvas.draw()
         print(f"Лучший индивид: {super_best}")
         self.graphLabel.update_graph()

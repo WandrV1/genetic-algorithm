@@ -221,7 +221,7 @@ class GeneticMaster:
                     individual.update_fitness()
                     # print("Got mutation")
 
-    def run(self, figure=None):
+    def run(self, ax=None):
         """
         Запуск генетического алгоритма
         :param canvas: FigureCanvasQTAgg для отображения графика
@@ -254,8 +254,7 @@ class GeneticMaster:
             self.mutation()
         
         # Построение графика
-        if (figure):
-            ax = figure.add_subplot()
+        if (ax):
             generations = list(range(1, self.generations_count+1))
             ax.plot(generations, self.metrics["avg"], label="avg")
             ax.plot(generations, self.metrics["min"], label="min")
