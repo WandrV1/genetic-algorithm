@@ -196,7 +196,7 @@ class GeneticMaster:
             new_individuals.append(Individual(child_genome2))
         return new_individuals
 
-    def mutation(self):
+    def mutation(self, population):
         """
         Мутация
         :param mutation_type: Тип мутации (вероятность, что ген мутирует)
@@ -204,7 +204,6 @@ class GeneticMaster:
         :return:
         """
         mutation_type = self.mutation_type
-        population = self.population
         if mutation_type == "strong":
             chance = 2 / len(population)
         elif mutation_type == "med":
@@ -250,8 +249,9 @@ class GeneticMaster:
             legacy = self.crossover_candidates(candidates)
             self.population.sort(key=lambda x: x.fitness)
             self.population = self.population[:-self.crossover_count*2]
+            self.mutation(legacy)
             self.population += legacy
-            self.mutation()
+
         
         # Построение графика
         if (ax):
