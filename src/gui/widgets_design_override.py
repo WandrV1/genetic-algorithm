@@ -49,11 +49,10 @@ class GraphWidget(QtWidgets.QLabel):
         if event.button() != left_mouse_button:
             return
         
-        x = event.localPos().x() / self.size().width()
-        y = event.localPos().y() / self.size().height()
+        x = event.localPos().x()# / self.size().width()
+        y = event.localPos().y()# / self.size().height()
 
         self.add_point(Point(x, y))
-        self.update_graph()
       
     def drawWidget(self, qp):
         size = self.size()
@@ -71,7 +70,8 @@ class GraphWidget(QtWidgets.QLabel):
 
         radius = 2
         for point in self.genetic_master.points:
-            center_x, center_y = point.x * w, point.y * h
+            center_x = point.x# * w
+            center_y = point.y# * h
             qp.drawEllipse(
                 center_x - radius,
                 center_y - radius,
@@ -87,6 +87,7 @@ class GraphWidget(QtWidgets.QLabel):
 
     def add_point(self, point: Point):
         self.genetic_master.points.append(point)
+        self.update_graph()
     
     def update_graph(self):
         self.repaint()

@@ -53,6 +53,7 @@ class MainWindow(QMainWindow, main_window.Ui_MainWindow):
 
         self.runButton.clicked.connect(self.run_algorithm)
         self.clearButton.clicked.connect(self.clear_points)
+        self.addPointButton.clicked.connect(self.add_point)
 
 
     def contextMenu(self, event):
@@ -127,6 +128,17 @@ class MainWindow(QMainWindow, main_window.Ui_MainWindow):
     def update_mutation_type(self, value):
         self.genetic_master.mutation_type = value
 
+    def add_point(self):
+        try:
+            x = float(self.xLineEdit.text())
+            y = float(self.yLineEdit.text())
+        except ValueError:
+            pass
+        else:
+            self.graphLabel.add_point(Point(x, y))
+        self.xLineEdit.clear()
+        self.yLineEdit.clear()
+
     def run_algorithm(self):
         self.ax.clear()
 
@@ -135,9 +147,13 @@ class MainWindow(QMainWindow, main_window.Ui_MainWindow):
             self.message("Требуется задать более двухточек!", True)
             return
 
-        super_best = self.genetic_master.run(self.ax)
+        super_best, super_genome = self.genetic_master.run(self.ax)
         self.canvas.draw()
+
         print(f"Лучший индивид: {super_best}")
+        for point in super_genome:
+            print(point)
+
         self.graphLabel.update_graph()
 
     def clear_points(self):
