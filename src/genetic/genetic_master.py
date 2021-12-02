@@ -267,6 +267,8 @@ class GeneticMaster:
         # self.super_genome = super_individual.genome
         self.super_genome = super_genome
 
+        for point in super_genome:
+            print(point)
         return super_best, Individual(super_genome)
 
     def clear(self):
